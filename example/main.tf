@@ -7,7 +7,7 @@ locals {
 
 ## Create Ocean Cluster in Spot.io and deploy controller pod ##
 module "ocean_eks" {
-  source = "../k8s-ocean"
+  source = "../"
 
   # Spot.io Credentials
   spotinst_token              = local.spotinst_token
