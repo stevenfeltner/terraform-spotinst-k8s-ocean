@@ -24,11 +24,11 @@ variable "subnet_ids" {
 }
 variable "vpc_id" {
   type        = string
-  description = "VPC ID where the EKS will be located"
+  description = "VPC ID where the cluster is located"
 }
 variable "region" {
   type        = string
-  description = "The region the EKS cluster will be located"
+  description = "The region the cluster is located"
 }
 variable "ami_id" {
   type        = string
@@ -167,7 +167,7 @@ variable "tags" {
     value = string
   }))
   default = null
-  description = "Tags to be added to resources"
+  description = "Additional Tags to be added to resources"
 }
 ##########################
 
