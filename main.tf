@@ -153,7 +153,7 @@ resource "spotinst_ocean_aws" "ocean" {
 ## Deploy Ocean Controller Pod into Cluster ##
 module "ocean-controller" {
   source = "spotinst/ocean-controller/spotinst"
-
+  count = var.use_as_template_only == true ? 0 : 1
   # Credentials.
   spotinst_token      = var.spotinst_token
   spotinst_account    = var.spotinst_account
