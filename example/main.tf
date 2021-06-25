@@ -17,7 +17,6 @@ module "ocean_eks" {
   cluster_name                = local.cluster_name
   region                      = "us-west-2"
   subnet_ids                  = ["subnet-12345678","subnet-12345678"]
-  vpc_id                      = "vpc-123456789"
 
   # Default Worker node specifics
   # If no AMI is provided will use most up to date one

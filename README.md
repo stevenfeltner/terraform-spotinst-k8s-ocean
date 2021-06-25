@@ -14,7 +14,6 @@ module "k8s-ocean" {
   cluster_name                = "Sample-EKS"
   region                      = "us-west-2"
   subnet_ids                  = ["subnet-12345678","subnet-12345678"]
-  vpc_id                      = "vpc-123456789"
   worker_instance_profile_arn = "arn:aws:iam::123456789:instance-profile/Spot-EKS-Workshop-Nodegroup"
   security_groups             = ["sg-123456789","sg-123456789"]
 

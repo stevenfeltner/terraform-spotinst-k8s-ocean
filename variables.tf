@@ -18,57 +18,28 @@ variable "cluster_name" {
   type        = string
   description = "Cluster name"
 }
-variable "subnet_ids" {
-  type        = list(string)
-  description = "List of subnet IDs"
-}
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID where the cluster is located"
-}
 variable "region" {
   type        = string
   description = "The region the cluster is located"
-}
-variable "ami_id" {
-  type        = string
-  default     = null
-  description = "The image ID for the EKS worker nodes. If none is provided, Terraform will search for the latest version of their EKS optimized worker AMI based on platform"
-}
-variable "worker_instance_profile_arn" {
-  type        = string
-  description = "Instance Profile ARN to assign to worker nodes. Should have the WorkerNode policy"
-}
-variable "security_groups" {
-  type        = list(string)
-  description = "List of security groups"
-}
-
-## Ocean Configurations ##
-variable "min_size" {
-  type        = number
-  default     = 0
-  description = "The lower limit of worker nodes the Ocean cluster can scale down to"
 }
 variable "max_size" {
   type        = number
   default     = 1000
   description = "The upper limit of worker nodes the Ocean cluster can scale up to"
 }
+variable "min_size" {
+  type        = number
+  default     = 0
+  description = "The lower limit of worker nodes the Ocean cluster can scale down to"
+}
 variable "desired_capacity" {
   type        = number
   default     = 1
   description = "The number of worker nodes to launch and maintain in the Ocean cluster"
 }
-variable "key_name" {
-  type        = string
-  default     = null
-  description = "The key pair to attach to the worker nodes launched by Ocean"
-}
-variable "associate_public_ip_address" {
-  type        = bool
-  default     = true
-  description = "Associate a public IP address to worker nodes"
+variable "subnet_ids" {
+  type        = list(string)
+  description = "List of subnet IDs"
 }
 variable "blacklist" {
   type        = list(string)
@@ -161,6 +132,71 @@ variable "blacklist" {
     "t4g.small",
     "t4g.xlarge"]
 }
+variable "user_data" {
+  type        = string
+  default     = null
+}
+variable "ami_id" {
+  type        = string
+  default     = null
+  description = "The image ID for the EKS worker nodes. If none is provided, Terraform will search for the latest version of their EKS optimized worker AMI based on platform"
+}
+variable "security_groups" {
+  type        = list(string)
+  description = "List of security groups"
+}
+variable "key_name" {
+  type        = string
+  default     = null
+  description = "The key pair to attach to the worker nodes launched by Ocean"
+}
+variable "worker_instance_profile_arn" {
+  type        = string
+  description = "Instance Profile ARN to assign to worker nodes. Should have the WorkerNode policy"
+}
+variable "associate_public_ip_address" {
+  type        = bool
+  default     = true
+  description = "Associate a public IP address to worker nodes"
+}
+variable "root_volume_size" {
+  type        = number
+  default     = null
+  description = "The size (in Gb) to allocate for the root volume. Minimum 20."
+}
+variable "monitoring" {
+  type = bool
+  default = false
+  description = "Enable detailed monitoring for cluster. Flag will enable Cloud Watch detailed monitoring (one minute increments). Note: there are additional hourly costs for this service based on the region used."
+}
+variable "ebs_optimized" {
+  type = bool
+  default = false
+  description = "launch specification defined on the Ocean object will function only as a template for virtual node groups."
+}
+variable "use_as_template_only" {
+  type = bool
+  default = false
+  description = "launch specification defined on the Ocean object will function only as a template for virtual node groups."
+}
+
+## Load Balancers ##
+variable "load_balancer_arn" {
+  type = string
+  default = null
+  description = "Required if type is set to TARGET_GROUP"
+}
+variable "load_balancer_name" {
+  type = string
+  default = null
+  description = "Required if type is set to CLASSIC"
+}
+variable "load_balancer_type" {
+  type = string
+  default = null
+  description = "Can be set to CLASSIC or TARGET_GROUP"
+}
+##########################
 variable "tags" {
   type = list(object({
     key = string
@@ -169,8 +205,6 @@ variable "tags" {
   default = null
   description = "Additional Tags to be added to resources"
 }
-##########################
-
 ## Ocean Strategy ##
 variable "fallback_to_ondemand" {
   type        = bool
@@ -210,27 +244,95 @@ variable "autoscale_is_auto_config" {
   default     = true
   description = "Automatically configure and optimize headroom resources."
 }
+variable "autoscale_cooldown" {
+  type        = number
+  default     = null
+  description = "Cooldown period between scaling actions."
+}
 variable "auto_headroom_percentage" {
   type        = number
   default     = 5
   description = "Set the auto headroom percentage (a number in the range [0, 200]) which controls the percentage of headroom from the cluster."
 }
+## autoscale_headroom ##
+variable "cpu_per_unit" {
+  type  = number
+  default = null
+  description = "Optionally configure the number of CPUs to allocate the headroom. CPUs are denoted in millicores, where 1000 millicores = 1 vCPU."
+}
+variable "gpu_per_unit" {
+  type  = number
+  default = null
+  description = "Optionally configure the number of GPUs to allocate the headroom."
+}
+variable "memory_per_unit" {
+  type  = number
+  default = null
+  description = "Optionally configure the amount of memory (MB) to allocate the headroom."
+}
+variable "num_of_unit" {
+  type  = number
+  default = null
+  description = "The number of units to retain as headroom, where each unit has the defined headroom CPU and memory."
+}
+## autoscale_down ##
 variable "max_scale_down_percentage" {
   type        = number
   default     = 10
   description = "Would represent the maximum % to scale-down. Number between 1-100."
 }
+## resource_limits ##
+variable "max_vcpu" {
+  type        = number
+  default     = null
+  description = "The maximum cpu in vCPU units that can be allocated to the cluster."
+}
+variable "max_memory_gib" {
+  type        = number
+  default     = null
+  description = "The maximum memory in GiB units that can be allocated to the cluster."
+}
 ##########################
 
-## Update Policy ##
+## Update Policy - update_policy ##
 variable "should_roll" {
   type        = string
   default     = false
   description = "Should the cluster be rolled for configuration updates"
 }
+## roll_config ##
 variable "batch_size_percentage" {
   type        = number
   default     = 20
   description = "Sets the percentage of the instances to deploy in each batch."
 }
 ##########################
+
+# shutdown_hours #
+variable "shutdown_is_enabled" {
+  type        = bool
+  default     = false
+  description = "Toggle the shutdown hours task."
+}
+variable "shutdown_time_windows" {
+  type        = list(string)
+  default     = ["Sat:20:00-Sun:04:00","Sun:20:00-Mon:04:00"]
+  description = "Set time windows for shutdown hours. Specify a list of timeWindows with at least one time window Each string is in the format of: ddd:hh:mm-ddd:hh:mm where ddd = day of week = Sun | Mon | Tue | Wed | Thu | Fri | Sat, hh = hour 24 = 0 -23, mm = minute = 0 - 59. Time windows should not overlap. Required if cluster.scheduling.isEnabled is true."
+}
+# task scheduling #
+variable "taskscheduling_is_enabled" {
+  type        = bool
+  default     = false
+  description = "Describes whether the task is enabled. When true the task should run when false it should not run. Required for cluster.scheduling.tasks object."
+}
+variable "cron_expression" {
+  type        = string
+  default     = "0 1 * * *"
+  description = "A valid cron expression. The cron is running in UTC time zone and is in Unix cron format Cron Expression Validator Script. Only one of frequency or cronExpression should be used at a time. Required for cluster.scheduling.tasks object. (Example: 0 1 * * *)."
+}
+variable "task_type" {
+  type        = string
+  default     = "clusterRoll"
+  description = "Valid values: clusterRoll. Required for cluster.scheduling.tasks object. (Example: clusterRoll)"
+}
+###################
