@@ -16,11 +16,6 @@ provider "aws" {
   region = var.region
   profile = var.aws_profile
 }
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
 ##################
 
 ### Data Resources ###
@@ -148,17 +143,4 @@ resource "spotinst_ocean_aws" "ocean" {
       desired_capacity
     ]
   }
-}
-
-## Deploy Ocean Controller Pod into Cluster ##
-module "ocean-controller" {
-  source = "spotinst/ocean-controller/spotinst"
-  count = var.use_as_template_only == true ? 0 : 1
-  # Credentials.
-  spotinst_token      = var.spotinst_token
-  spotinst_account    = var.spotinst_account
-
-  # Configuration.
-  cluster_identifier  = var.cluster_name
-  disable_auto_update = false
 }
