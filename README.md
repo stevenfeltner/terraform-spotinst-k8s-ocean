@@ -22,7 +22,7 @@ module "ocean-controller" {
 }
 ```
 
-~> You must configure the same `cluster_identifier` both for the Ocean controller and for the `spotinst_ocean_aws` resource. The k8s-ocean module will use the cluster name as the identifier. Ensure this is also used in the controller config
+~> You must configure the same `cluster_identifier` both for the Ocean controller and for the `spotinst_ocean_aws` resource. The `k8s-ocean` module will use the cluster name as the identifier. Ensure this is also used in the controller config
 
 ## Usage
 ```hcl
@@ -52,9 +52,9 @@ module "k8s-ocean" {
 | spotinst/spotinst | >= 1.30.0 |
 
 ## Modules
-* k8s-ocean - Creates Ocean Cluster
-* ocean-controller - Create and installs spot ocean controller pod [Doc](https://registry.terraform.io/modules/spotinst/ocean-controller/spotinst/latest)
-
+* `k8s-ocean` - Creates Ocean Cluster
+* `ocean-controller` - Create and installs spot ocean controller pod [Doc](https://registry.terraform.io/modules/spotinst/ocean-controller/spotinst/latest)
+* `k8s-ocean-launchspec` - (Optional) Add custom virtual node groups [Doc](https://registry.terraform.io/modules/stevenfeltner/k8s-ocean-launchspec/spotinst/latest)
 
 ## Documentation
 
