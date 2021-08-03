@@ -143,4 +143,4 @@ resource "spotinst_ocean_aws" "ocean" {
       desired_capacity
     ]
   }
-}yes
+}
