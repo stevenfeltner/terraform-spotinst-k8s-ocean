@@ -29,7 +29,7 @@ variable "max_size" {
 }
 variable "min_size" {
   type        = number
-  default     = 0
+  default     = 1
   description = "The lower limit of worker nodes the Ocean cluster can scale down to"
 }
 variable "desired_capacity" {
@@ -156,7 +156,7 @@ variable "worker_instance_profile_arn" {
 }
 variable "associate_public_ip_address" {
   type        = bool
-  default     = true
+  default     = null
   description = "Associate a public IP address to worker nodes"
 }
 variable "root_volume_size" {
