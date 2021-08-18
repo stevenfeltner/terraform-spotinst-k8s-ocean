@@ -10,7 +10,8 @@ module "k8s-ocean" {
   ...
 }
 
-### Data Resources for kubernetes provider ###
+## Option 1 to initialize kubernetes provider ##
+# Data Resources for kubernetes provider
 data "aws_eks_cluster" "cluster" {
   name    = "cluster name"
 }
@@ -21,6 +22,12 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
+}
+##################
+
+## Option 2 to initialize kubernetes provider ##
+provider "kubernetes" {
+  config_path = "~/.kube/config"
 }
 ##################
 
