@@ -180,17 +180,17 @@ variable "use_as_template_only" {
 variable "load_balancer_arn" {
   type = string
   default = null
-  description = "Required if type is set to TARGET_GROUP"
+  description = "(Optional) Required if type is set to TARGET_GROUP"
 }
 variable "load_balancer_name" {
   type = string
   default = null
-  description = "Required if type is set to CLASSIC"
+  description = "(Optional) Required if type is set to CLASSIC"
 }
 variable "load_balancer_type" {
   type = string
   default = null
-  description = "Can be set to CLASSIC or TARGET_GROUP"
+  description = "(Optional) Can be set to CLASSIC or TARGET_GROUP"
 }
 ##########################
 variable "tags" {
@@ -224,7 +224,7 @@ variable "grace_period" {
 }
 variable "spot_percentage" {
   type        = number
-  default     = null
+  default     = 100
   description = "The % of the cluster should be running on Spot vs OD. 100 means 100% of the cluster will be ran on Spot instances"
 }
 ##########################
