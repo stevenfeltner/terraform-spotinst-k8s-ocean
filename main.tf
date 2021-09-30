@@ -4,6 +4,9 @@ terraform {
     spotinst = {
       source = "spotinst/spotinst"
     }
+    aws = {
+      source  = "hashicorp/aws"
+    }
   }
 }
 
@@ -11,10 +14,6 @@ terraform {
 provider "spotinst" {
   token   = var.spotinst_token
   account = var.spotinst_account
-}
-provider "aws" {
-  region = var.region
-  profile = var.aws_profile
 }
 ##################
 

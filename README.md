@@ -7,6 +7,7 @@ Installation of the Ocean controller is required by this resource. You can accom
 
 ```hcl
 module "k8s-ocean" {
+  source  = "stevenfeltner/k8s-ocean/spotinst"
   ...
 }
 
@@ -71,10 +72,11 @@ module "k8s-ocean" {
 | Name | Version |
 |------|---------|
 | spotinst/spotinst | >= 1.30.0 |
+| hashicorp/aws |  |
 
 ## Modules
 * `k8s-ocean` - Creates Ocean Cluster
-* `ocean-controller` - Create and installs spot ocean controller pod [Doc](https://registry.terraform.io/modules/spotinst/ocean-controller/spotinst/latest)
+* `ocean-controller` - Create and installs Spot Ocean controller pod [Doc](https://registry.terraform.io/modules/spotinst/ocean-controller/spotinst/latest)
 * `k8s-ocean-launchspec` - (Optional) Add custom virtual node groups [Doc](https://registry.terraform.io/modules/stevenfeltner/k8s-ocean-launchspec/spotinst/latest)
 
 ## Documentation

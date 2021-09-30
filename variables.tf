@@ -7,10 +7,6 @@ variable "spotinst_account" {
   type        = string
   description = "Spotinst account ID"
 }
-variable "aws_profile" {
-  type        = string
-  default     = null
-}
 ##########################
 
 ## Launch Configuration ##
