@@ -224,7 +224,7 @@ variable "grace_period" {
 }
 variable "spot_percentage" {
   type        = number
-  default     = 100
+  default     = null
   description = "The % of the cluster should be running on Spot vs OD. 100 means 100% of the cluster will be ran on Spot instances"
 }
 ##########################
