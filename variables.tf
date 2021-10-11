@@ -280,12 +280,12 @@ variable "max_scale_down_percentage" {
 ## resource_limits ##
 variable "max_vcpu" {
   type        = number
-  default     = null
+  default     = 20000
   description = "The maximum cpu in vCPU units that can be allocated to the cluster."
 }
 variable "max_memory_gib" {
   type        = number
-  default     = null
+  default     = 100000
   description = "The maximum memory in GiB units that can be allocated to the cluster."
 }
 ##########################
