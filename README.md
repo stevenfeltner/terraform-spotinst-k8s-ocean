@@ -63,7 +63,7 @@ module "k8s-ocean" {
   security_groups             = ["sg-123456789","sg-123456789"]
 
   # Additional Tags
-  tags = [{key = "CreatedBy", value = "Terraform"}]
+  tags = {CreatedBy = "Terraform"}
 }
 ```
 

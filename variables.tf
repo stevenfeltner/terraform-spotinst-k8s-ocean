@@ -194,10 +194,7 @@ variable "load_balancer_type" {
 }
 ##########################
 variable "tags" {
-  type = list(object({
-    key = string
-    value = string
-  }))
+  type = map(string)
   default = null
   description = "Additional Tags to be added to resources"
 }

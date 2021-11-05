@@ -32,6 +32,7 @@ data "aws_ami" "eks_worker" {
   most_recent = true
   owners = ["amazon"]
 }
+data "aws_default_tags" "default_tags" {}
 ##################
 
 ### Local Variable ###
@@ -79,12 +80,20 @@ resource "spotinst_ocean_aws" "ocean" {
     key   = "kubernetes.io/cluster/${var.cluster_name}"
     value = "owned"
   }
+  # Default Tags
+  dynamic tags {
+    for_each = data.aws_default_tags.default_tags.tags
+    content {
+      key = tags.key
+      value = tags.value
+    }
+  }
   # Additional Tags
   dynamic tags {
-    for_each = var.tags == null ? [] : var.tags
+    for_each = var.tags == null ? {} : var.tags
     content {
-      key = tags.value["key"]
-      value = tags.value["value"]
+      key = tags.key
+      value = tags.value
     }
   }
   # Strategy
