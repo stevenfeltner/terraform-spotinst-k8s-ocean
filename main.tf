@@ -10,12 +10,6 @@ terraform {
   }
 }
 
-### Providers ###
-provider "spotinst" {
-  token   = var.spotinst_token
-  account = var.spotinst_account
-}
-##################
 
 ### Data Resources ###
 data "aws_eks_cluster" "cluster" {
