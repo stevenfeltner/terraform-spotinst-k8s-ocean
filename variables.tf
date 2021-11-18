@@ -26,9 +26,14 @@ variable "subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs"
 }
+variable "whitelist" {
+  type        = list(string)
+  default     = null
+  description = "List of instance types allowed in the Ocean cluster (`whitelist` and `blacklist` are mutually exclusive)"
+}
 variable "blacklist" {
   type        = list(string)
-  description = "List of instance types to prohibit Ocean to use"
+  description = "List of instance types not allowed in the Ocean cluster (`whitelist` and `blacklist` are mutually exclusive)"
   default     = [
     "c6g.12xlarge",
     "c6g.16xlarge",
@@ -128,16 +133,16 @@ variable "ami_id" {
 }
 variable "security_groups" {
   type        = list(string)
-  description = "List of security groups"
+  description = "One or more security group ids."
 }
 variable "key_name" {
   type        = string
   default     = null
-  description = "The key pair to attach to the worker nodes launched by Ocean"
+  description = "The key pair to attach the instances."
 }
 variable "worker_instance_profile_arn" {
   type        = string
-  description = "Instance Profile ARN to assign to worker nodes. Should have the WorkerNode policy"
+  description = "The instance profile iam role."
 }
 variable "associate_public_ip_address" {
   type        = bool
@@ -150,41 +155,41 @@ variable "root_volume_size" {
   description = "The size (in Gb) to allocate for the root volume. Minimum 20."
 }
 variable "monitoring" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Enable detailed monitoring for cluster. Flag will enable Cloud Watch detailed monitoring (one minute increments). Note: there are additional hourly costs for this service based on the region used."
 }
 variable "ebs_optimized" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "launch specification defined on the Ocean object will function only as a template for virtual node groups."
 }
 variable "use_as_template_only" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "launch specification defined on the Ocean object will function only as a template for virtual node groups."
 }
 
 ## Load Balancers ##
 variable "load_balancer_arn" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "(Optional) Required if type is set to TARGET_GROUP"
 }
 variable "load_balancer_name" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "(Optional) Required if type is set to CLASSIC"
 }
 variable "load_balancer_type" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "(Optional) Can be set to CLASSIC or TARGET_GROUP"
 }
 ##########################
 variable "tags" {
-  type = map(string)
-  default = null
+  type        = map(string)
+  default     = null
   description = "Additional Tags to be added to resources"
 }
 ## Ocean Strategy ##
@@ -215,6 +220,19 @@ variable "spot_percentage" {
 }
 ##########################
 
+## instance_metadata_options ##
+variable "http_tokens" {
+  type        = string
+  default     = null
+  description = "Determines if a signed token is required or not. Valid values: optional or required."
+}
+variable "http_put_response_hop_limit" {
+  type        = number
+  default     = null
+  description = "An integer from 1 through 64. The desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further the instance metadata requests can travel."
+}
+##########################
+
 ## Auto Scaler ##
 variable "autoscale_is_enabled" {
   type        = bool
@@ -238,23 +256,23 @@ variable "auto_headroom_percentage" {
 }
 ## autoscale_headroom ##
 variable "cpu_per_unit" {
-  type  = number
-  default = null
+  type        = number
+  default     = null
   description = "Optionally configure the number of CPUs to allocate the headroom. CPUs are denoted in millicores, where 1000 millicores = 1 vCPU."
 }
 variable "gpu_per_unit" {
-  type  = number
-  default = null
+  type        = number
+  default     = null
   description = "Optionally configure the number of GPUs to allocate the headroom."
 }
 variable "memory_per_unit" {
-  type  = number
-  default = null
+  type        = number
+  default     = null
   description = "Optionally configure the amount of memory (MB) to allocate the headroom."
 }
 variable "num_of_unit" {
-  type  = number
-  default = null
+  type        = number
+  default     = null
   description = "The number of units to retain as headroom, where each unit has the defined headroom CPU and memory."
 }
 ## autoscale_down ##
@@ -287,6 +305,11 @@ variable "batch_size_percentage" {
   type        = number
   default     = 20
   description = "Sets the percentage of the instances to deploy in each batch."
+}
+variable "launch_spec_ids" {
+  type        = list(string)
+  default     = null
+  description = "List of virtual node group identifiers to be rolled."
 }
 ##########################
 

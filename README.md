@@ -72,7 +72,7 @@ module "k8s-ocean" {
 
 | Name | Version |
 |------|---------|
-| spotinst/spotinst | >= 1.30.0 |
+| spotinst/spotinst | >= 1.62.0 |
 | hashicorp/aws |  |
 
 ## Modules

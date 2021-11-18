@@ -1,40 +1,3 @@
-terraform {
-  required_version = ">= 0.13.0"
-  required_providers {
-    spotinst = {
-      source = "spotinst/spotinst"
-    }
-    aws = {
-      source  = "hashicorp/aws"
-    }
-  }
-}
-
-
-### Data Resources ###
-data "aws_eks_cluster" "cluster" {
-  name    = var.cluster_name
-}
-data "aws_eks_cluster_auth" "cluster" {
-  name    = var.cluster_name
-}
-data "aws_ami" "eks_worker" {
-  filter {
-    name   = "name"
-    values = [local.worker_ami_name_filter]
-  }
-  most_recent = true
-  owners = ["amazon"]
-}
-data "aws_default_tags" "default_tags" {}
-##################
-
-### Local Variable ###
-locals {
-  worker_ami_name_filter = "amazon-eks-node-${data.aws_eks_cluster.cluster.version}-v*"
-}
-##################
-
 ## Create Ocean Cluster in Spot.io
 resource "spotinst_ocean_aws" "ocean" {
   name                                = var.cluster_name
@@ -44,6 +7,7 @@ resource "spotinst_ocean_aws" "ocean" {
   min_size                            = var.min_size
   desired_capacity                    = var.desired_capacity
   subnet_ids                          = var.subnet_ids
+  whitelist                           = var.whitelist
   blacklist                           = var.blacklist
   user_data                           = var.user_data !=null ? var.user_data : <<-EOF
                                           #!/bin/bash
@@ -74,7 +38,7 @@ resource "spotinst_ocean_aws" "ocean" {
     key   = "kubernetes.io/cluster/${var.cluster_name}"
     value = "owned"
   }
-  # Default Tags
+  # Default Provider Tags
   dynamic tags {
     for_each = data.aws_default_tags.default_tags.tags
     content {
@@ -91,11 +55,16 @@ resource "spotinst_ocean_aws" "ocean" {
     }
   }
   # Strategy
-  fallback_to_ondemand                = var.fallback_to_ondemand
-  utilize_reserved_instances          = var.utilize_reserved_instances
-  draining_timeout                    = var.draining_timeout
-  grace_period                        = var.grace_period
-  spot_percentage                     = var.spot_percentage
+  fallback_to_ondemand            = var.fallback_to_ondemand
+  utilize_reserved_instances      = var.utilize_reserved_instances
+  draining_timeout                = var.draining_timeout
+  grace_period                    = var.grace_period
+  spot_percentage                 = var.spot_percentage
+
+  instance_metadata_options {
+    http_tokens                   = var.http_tokens
+    http_put_response_hop_limit   = var.http_put_response_hop_limit
+  }
 
   # Auto Scaler Configurations
   autoscaler {
@@ -123,6 +92,7 @@ resource "spotinst_ocean_aws" "ocean" {
     should_roll               = var.should_roll
     roll_config {
       batch_size_percentage   = var.batch_size_percentage
+      launch_spec_ids         = var.launch_spec_ids
     }
   }
 
